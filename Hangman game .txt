@@ -1,0 +1,117 @@
+import random
+
+# Word categories
+word_categories = {
+     'animals': ['elephant', 'giraffe', 'tiger', 'penguin', 'dolphin'],
+    'countries': ['india', 'brazil', 'canada', 'japan', 'australia'],
+    'movies': ['avatar', 'inception', 'titanic', 'jaws', 'frozen']
+}
+
+# Hangman graphics
+hangman_graphics = [
+    '''
+    +---+
+        |
+        |
+        |
+       ===
+    ''',
+    '''
+    +---+
+    O   |
+        |
+        |
+       ===
+    ''',
+    '''
+    +---+
+    O   |
+    |   |
+        |
+       ===
+    ''',
+    '''
+    +---+
+    O   |
+   /|   |
+        |
+       ===
+    ''',
+    '''
+    +---+
+    O   |
+   /|\\  |
+        |
+       ===
+    ''',
+    '''
+    +---+
+    O   |
+   /|\\  |
+   /    |
+       ===
+    ''',
+    '''
+    +---+
+    O   |
+   /|\\  |
+   / \\  |
+       ===
+    '''
+]
+
+def choose_category():
+    print("Choose a category:")
+    for category in word_categories:
+        print(category.capitalize())
+    category = input("Enter your choice: ").lower()
+    return word_categories.get(category, word_categories['animals'])
+
+def choose_word(word_list):
+    return random.choice(word_list)
+
+def display_word(word, guessed_letters):
+    display = ''
+    for letter in word:
+        if letter in guessed_letters:
+            display += letter + ' '
+        else:
+            display += '_ '
+    return display.strip()
+
+def hangman():
+    word_list = choose_category()
+    chosen_word = choose_word(word_list)
+    guessed_letters = []
+    incorrect_guesses = 0
+    max_attempts = len(hangman_graphics) - 1
+
+    print("Welcome to Hangman!")
+    print(hangman_graphics[0])
+
+    while incorrect_guesses < max_attempts:
+        print("Word:", display_word(chosen_word, guessed_letters))
+        guess = input("Guess a letter: ").lower()
+
+        if guess.isalpha() and len(guess) == 1:
+            if guess in guessed_letters:
+                print("You've already guessed that letter. Try again.")
+            elif guess in chosen_word:
+                print("Correct!")
+                guessed_letters.append(guess)
+            else:
+                print("Incorrect!")
+                incorrect_guesses += 1
+                print(hangman_graphics[incorrect_guesses])
+        else:
+            print("Invalid input. Please enter a single letter.")
+
+        if set(guessed_letters) == set(chosen_word):
+            print("Congratulations! You guessed the word:", chosen_word)
+            break
+
+    if incorrect_guesses == max_attempts:
+        print("Sorry, you ran out of attempts. The word was:", chosen_word)
+
+if __name__ == "__main__":
+    hangman()
